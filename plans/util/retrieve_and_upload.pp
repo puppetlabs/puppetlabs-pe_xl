@@ -29,8 +29,8 @@ plan peadm::util::retrieve_and_upload(
     |-HEREDOC
     # lint:endignore
 
-  $operating_system = run_task('peadm::os_identification', 'local://localhost')
-  $os_string =$operating_system.first.value['_output']
+  $operating_system = run_task('facts', 'local://localhost')
+  $os_string =$operating_system.first.value['os']['family']
 
   if 'windows' in $os_string {
     $exists = run_command("[System.IO.File]::Exists('${local_path}')", 'local://localhost')

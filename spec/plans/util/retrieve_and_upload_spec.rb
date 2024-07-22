@@ -5,7 +5,7 @@ describe 'peadm::util::retrieve_and_upload' do
   include BoltSpec::Plans
 
   it 'file needs downloaded and needs uploaded' do
-    expect_task('peadm::os_identification')
+    allow_task('facts').be_called_times(1).with_targets('local://localhost').always_return({ 'os' => { 'family' => 'RedHat' } })
     expect_command("test -e '/tmp/download'").error_with('kind' => 'nope', 'msg' => 'The command failed with exit code 1')
     expect_task('peadm::download')
     expect_task('peadm::filesize').be_called_times(2).return_for_targets(

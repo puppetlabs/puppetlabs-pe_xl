@@ -72,7 +72,6 @@
 * [`infrastatus`](#infrastatus): Runs puppet infra status and returns the output
 * [`mkdir_p_file`](#mkdir_p_file): Create a file with the specified content at the specified location
 * [`mv`](#mv): Wrapper task for mv command
-* [`os_identification`](#os_identification): Return the operating system runnin gon the target as a string
 * [`pe_install`](#pe_install): Install Puppet Enterprise from a tarball
 * [`pe_ldap_config`](#pe_ldap_config): Set the ldap config in the PE console
 * [`pe_uninstall`](#pe_uninstall): Uninstall Puppet Enterprise
@@ -1297,12 +1296,6 @@ Current path of file
 Data type: `String`
 
 New path of file
-
-### <a name="os_identification"></a>`os_identification`
-
-Return the operating system runnin gon the target as a string
-
-**Supports noop?** false
 
 ### <a name="pe_install"></a>`pe_install`
 
