@@ -1355,6 +1355,12 @@ Data type: `String`
 
 The PE Main server
 
+##### `pe_version`
+
+Data type: `String`
+
+The PE version
+
 ### <a name="pe_uninstall"></a>`pe_uninstall`
 
 Uninstall Puppet Enterprise

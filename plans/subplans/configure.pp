@@ -124,10 +124,15 @@ plan peadm::subplans::configure (
   }
 
   if $ldap_config {
+    $pe_version = run_task('peadm::read_file', $primary_target,
+      path => '/opt/puppetlabs/server/pe_version',
+    )[0][content].chomp
+
     # Run the task to configure ldap
     $ldap_result = run_task('peadm::pe_ldap_config', $primary_target,
       pe_main         => $primary_target.peadm::certname(),
       ldap_config     => $ldap_config,
+      pe_version      => $pe_version,
       '_catch_errors' => true,
     )
 
