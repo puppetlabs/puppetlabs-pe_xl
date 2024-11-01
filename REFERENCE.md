@@ -2022,7 +2022,6 @@ The following parameters are available in the `peadm::install` plan:
 * [`compiler_pool_address`](#-peadm--install--compiler_pool_address)
 * [`internal_compiler_a_pool_address`](#-peadm--install--internal_compiler_a_pool_address)
 * [`internal_compiler_b_pool_address`](#-peadm--install--internal_compiler_b_pool_address)
-* [`pe_installer_source`](#-peadm--install--pe_installer_source)
 * [`ldap_config`](#-peadm--install--ldap_config)
 * [`final_agent_state`](#-peadm--install--final_agent_state)
 * [`stagingdir`](#-peadm--install--stagingdir)
@@ -2075,17 +2074,6 @@ Data type: `Optional[String]`
 A load balancer address directing traffic to any of the "B" pool
 compilers. This is used for DR configuration in large and extra large
 architectures.
-
-Default value: `undef`
-
-##### <a name="-peadm--install--pe_installer_source"></a>`pe_installer_source`
-
-Data type: `Optional[Stdlib::HTTPSUrl]`
-
-The URL to download the Puppet Enterprise installer media from. If not
-specified, PEAdm will attempt to download PE installation media from its
-standard public source. When specified, PEAdm will download directly from the
-URL given.
 
 Default value: `undef`
 
@@ -2503,7 +2491,6 @@ The following parameters are available in the `peadm::upgrade` plan:
 * [`compiler_pool_address`](#-peadm--upgrade--compiler_pool_address)
 * [`internal_compiler_a_pool_address`](#-peadm--upgrade--internal_compiler_a_pool_address)
 * [`internal_compiler_b_pool_address`](#-peadm--upgrade--internal_compiler_b_pool_address)
-* [`pe_installer_source`](#-peadm--upgrade--pe_installer_source)
 * [`final_agent_state`](#-peadm--upgrade--final_agent_state)
 * [`r10k_known_hosts`](#-peadm--upgrade--r10k_known_hosts)
 * [`stagingdir`](#-peadm--upgrade--stagingdir)
@@ -2545,17 +2532,6 @@ Data type: `Optional[String]`
 A load balancer address directing traffic to any of the "B" pool
 compilers. This is used for DR configuration in large and extra large
 architectures.
-
-Default value: `undef`
-
-##### <a name="-peadm--upgrade--pe_installer_source"></a>`pe_installer_source`
-
-Data type: `Optional[Stdlib::HTTPSUrl]`
-
-The URL to download the Puppet Enterprise installer media from. If not
-specified, PEAdm will attempt to download PE installation media from its
-standard public source. When specified, PEAdm will download directly from the
-URL given.
 
 Default value: `undef`
 

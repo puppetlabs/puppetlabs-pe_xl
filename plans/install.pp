@@ -11,11 +11,6 @@
 #   A load balancer address directing traffic to any of the "B" pool
 #   compilers. This is used for DR configuration in large and extra large
 #   architectures.
-# @param pe_installer_source
-#   The URL to download the Puppet Enterprise installer media from. If not
-#   specified, PEAdm will attempt to download PE installation media from its
-#   standard public source. When specified, PEAdm will download directly from the
-#   URL given.
 # @param ldap_config
 #   If specified, configures PE RBAC DS with the supplied configuration hash.
 #   The parameter should be set to a valid set of connection settings as
@@ -47,7 +42,6 @@ plan peadm::install (
   # Common Configuration
   String                            $console_password,
   Peadm::Pe_version                 $version                          = '2021.7.9',
-  Optional[Stdlib::HTTPSUrl]        $pe_installer_source              = undef,
   Optional[Array[String]]           $dns_alt_names                    = undef,
   Optional[String]                  $compiler_pool_address            = undef,
   Optional[String]                  $internal_compiler_a_pool_address = undef,
@@ -94,7 +88,6 @@ plan peadm::install (
 
     # Common Configuration
     version                        => $version,
-    pe_installer_source            => $pe_installer_source,
     console_password               => $console_password,
     dns_alt_names                  => $dns_alt_names,
     pe_conf_data                   => $pe_conf_data,
