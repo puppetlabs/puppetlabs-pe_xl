@@ -16,12 +16,10 @@ plan peadm_spec::upgrade_test_cluster(
   $common_params = {
     download_mode          => $download_mode,
     version                => $version,
-    pe_installer_source    => $pe_installer_source,
     permit_unsafe_versions => $permit_unsafe_versions,
   }
 
-  $arch_params =
-    case $architecture {
+  $arch_params = case $architecture {
     'standard': {{
         primary_host => $t.filter |$n| { $n.vars['role'] == 'primary' },
     } }
@@ -51,6 +49,26 @@ plan peadm_spec::upgrade_test_cluster(
         compiler_hosts           => $t.filter |$n| { $n.vars['role'] == 'compiler' },
     } }
     default: { fail('Invalid architecture!') }
+  }
+
+  if $pe_installer_source {
+    $targets             = $arch_params.values.flatten
+    $platform            = run_task('peadm::precheck', $arch_params['primary_host']).first['platform']
+    $pe_tarball_name     = "puppet-enterprise-${version}-${platform}.tar.gz"
+    $upload_tarball_path = "/tmp/${pe_tarball_name}"
+
+    if $download_mode == 'bolthost' {
+      run_plan('peadm::util::retrieve_and_upload', $targets,
+        source      => $pe_installer_source,
+        local_path  => "/tmp/${pe_tarball_name}",
+        upload_path => $upload_tarball_path,
+      )
+    } else {
+      run_task('peadm::download', $targets,
+        source => $pe_installer_source,
+        path   => $upload_tarball_path,
+      )
+    }
   }
 
   $params = $arch_params + $common_params
