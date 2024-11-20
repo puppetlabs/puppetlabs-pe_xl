@@ -1,9 +1,0 @@
-{
-    "description": "Return the operating system runnin gon the target as a string",
-    "parameters": { },
-    "implementations": [
-      {"name": "os_identification.sh", "requirements": ["shell"],  "input_method": "environment"},
-      {"name": "os_identification.ps1", "requirements": ["powershell"]}
-    ]
-  }
-  
