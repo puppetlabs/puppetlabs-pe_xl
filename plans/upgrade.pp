@@ -11,11 +11,6 @@
 #   A load balancer address directing traffic to any of the "B" pool
 #   compilers. This is used for DR configuration in large and extra large
 #   architectures.
-# @param pe_installer_source
-#   The URL to download the Puppet Enterprise installer media from. If not
-#   specified, PEAdm will attempt to download PE installation media from its
-#   standard public source. When specified, PEAdm will download directly from the
-#   URL given.
 # @param final_agent_state
 #   Configures the state the puppet agent should be in on infrastructure nodes
 #   after PE is upgraded successfully.
@@ -46,7 +41,6 @@ plan peadm::upgrade (
 
   # Common Configuration
   Optional[Peadm::Pe_version]  $version                          = undef,
-  Optional[Stdlib::HTTPSUrl]   $pe_installer_source              = undef,
   Optional[String]             $compiler_pool_address            = undef,
   Optional[String]             $internal_compiler_a_pool_address = undef,
   Optional[String]             $internal_compiler_b_pool_address = undef,
@@ -119,21 +113,14 @@ plan peadm::upgrade (
 
   $platform = run_task('peadm::precheck', $primary_target).first['platform']
 
-  if $pe_installer_source {
-    $pe_tarball_name   = $pe_installer_source.split('/')[-1]
-    $pe_tarball_source = $pe_installer_source
-    $_version          = $pe_tarball_name.split('-')[2]
-  } else {
-    $_version          = $version
-    $pe_tarball_name   = "puppet-enterprise-${_version}-${platform}.tar.gz"
-    $pe_tarball_source = "https://s3.amazonaws.com/pe-builds/released/${_version}/${pe_tarball_name}"
-  }
+  $pe_tarball_name   = "puppet-enterprise-${version}-${platform}.tar.gz"
+  $pe_tarball_source = "https://s3.amazonaws.com/pe-builds/released/${version}/${pe_tarball_name}"
 
   $upload_tarball_path = "${uploaddir}/${pe_tarball_name}"
 
   peadm::assert_supported_bolt_version()
 
-  peadm::assert_supported_pe_version($_version, $permit_unsafe_versions)
+  peadm::assert_supported_pe_version($version, $permit_unsafe_versions)
 
   # Gather certificate extension information from all systems
   $cert_extensions = run_task('peadm::cert_data', $all_targets).reduce({}) |$memo,$result| {
@@ -386,7 +373,7 @@ plan peadm::upgrade (
     # doesn't deal well with the PuppetDB database being on a separate node.
     # So, move it aside before running the upgrade.
     $pdbapps = '/opt/puppetlabs/server/apps/puppetdb/cli/apps'
-    $workaround_delete_reports = $arch['disaster-recovery'] and $_version =~ SemVerRange('>= 2019.8')
+    $workaround_delete_reports = $arch['disaster-recovery'] and $version =~ SemVerRange('>= 2019.8')
     if $workaround_delete_reports {
 # lint:ignore:strict_indent
       run_command(@("COMMAND"/$), $replica_target)
@@ -438,7 +425,7 @@ plan peadm::upgrade (
     )
   }
 
-  peadm::check_version_and_known_hosts($current_pe_version, $_version, $r10k_known_hosts)
+  peadm::check_version_and_known_hosts($current_pe_version, $version, $r10k_known_hosts)
 
   return("Upgrade of Puppet Enterprise ${arch['architecture']} completed.")
 }
