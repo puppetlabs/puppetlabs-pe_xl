@@ -5,6 +5,11 @@
       "type": "String",
       "description": "The name of the replica to provision"
     },
+    "topology": {
+      "type": "String",
+      "description": "The topology of PE installation",
+      "default": "mono-with-compile"
+    },
     "token_file": {
       "type": "Optional[String]",
       "description": "The name of the token-file for auth"
