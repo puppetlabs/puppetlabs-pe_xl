@@ -59,7 +59,6 @@ plan peadm_spec::perform_failover(
   out::message("Active nodes 2: ${res2.first['stdout']}")
 
   # add new replica
-  $replica_postgresql_host = $t.filter |$n| { $n.vars['role'] == 'primary-pdb-postgresql' }[0]
   $new_replica_host = $t.filter |$n| { $n.vars['role'] == 'spare-replica' }[0]
 
   if $new_replica_host == [] {
@@ -76,7 +75,6 @@ plan peadm_spec::perform_failover(
   run_plan('peadm::add_replica',
     primary_host            => $replica_host.uri,
     replica_host            => $new_replica_host.uri,
-    replica_postgresql_host => $replica_postgresql_host ? {[] => undef, default => $replica_postgresql_host.uri },
   )
 
   $res3 = run_command("/opt/puppetlabs/bin/puppet query \'${query}\'", $replica_host)
