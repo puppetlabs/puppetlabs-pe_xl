@@ -100,6 +100,7 @@ plan peadm::upgrade (
   }
 
   out::message('# Gathering information')
+  peadm::check_availability($all_targets)
 
   # lint:ignore:strict_indent
   $primary_target.peadm::fail_on_transport('pcp', @(HEREDOC/n))

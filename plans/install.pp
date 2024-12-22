@@ -77,6 +77,15 @@ plan peadm::install (
 ) {
   peadm::assert_supported_bolt_version()
 
+  out::message('# Gathering information')
+  $all_targets = peadm::flatten_compact([
+      $primary_host,
+      $replica_host,
+      $replica_postgresql_host,
+      $compiler_hosts,
+      $primary_postgresql_host,
+  ])
+  peadm::check_availability($all_targets)
   peadm::assert_supported_pe_version($version, $permit_unsafe_versions)
 
   $install_result = run_plan('peadm::subplans::install',

@@ -59,6 +59,7 @@ plan peadm::convert (
   )
 
   out::message('# Gathering information')
+  peadm::check_availability($all_targets)
 
   # Get trusted fact information for all compilers. Use peadm::certname() as
   # the hash key because the apply block below will break trying to parse the
