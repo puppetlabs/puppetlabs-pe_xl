@@ -12,6 +12,7 @@ def main
   params = JSON.parse(STDIN.read)
   data = params['ldap_config']
   pe_main = params['pe_main']
+  pe_version = params['pe_version']
 
   caf = ['/opt/puppetlabs/bin/puppet', 'config', 'print', 'localcacert']
   cafout, cafstatus = Open3.capture2(*caf)
@@ -31,15 +32,23 @@ def main
     raise 'Could not get the Key file path.'
   end
 
-  uri = URI("https://#{pe_main}:4433/rbac-api/v1/ds")
-  https = Net::HTTP.new(uri.host, uri.port)
+  if Gem::Version.new(pe_version) < Gem::Version.new('2023.8.0')
+    ldap_path = URI('rbac-api/v1/ds')
+    uri = URI("https://#{pe_main}:4433/#{ldap_path}")
+    req = Net::HTTP::Put.new(uri, 'Content-type' => 'application/json')
+  else
+    ldap_path = URI('rbac-api/v1/command/ldap/create')
+    uri = URI("https://#{pe_main}:4433/#{ldap_path}")
+    req = Net::HTTP::Post.new(uri, 'Content-type' => 'application/json')
+  end
+
+  https = Net::HTTP.new(pe_main, '4433')
   https.use_ssl = true
   https.verify_mode = OpenSSL::SSL::VERIFY_PEER
   https.ca_file = cafout.strip
   https.cert = OpenSSL::X509::Certificate.new(File.read(certout.strip))
   https.key = OpenSSL::PKey::RSA.new(File.read(keyout.strip))
 
-  req = Net::HTTP::Put.new(uri, 'Content-type' => 'application/json')
   req.body = data.to_json
 
   resp = https.request(req)
