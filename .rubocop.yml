@@ -1,40 +1,33 @@
 ---
-require:
-- rubocop-performance
-- rubocop-rspec
+require: [rubocop-performance, rubocop-rspec]
 AllCops:
-  Newcops: enable
-  ExtraDetails: true
-  DisplayStyleGuide: true
+  NewCops: enable
   DisplayCopNames: true
-  TargetRubyVersion: '2.7'
-  Include:
-  - "**/*.rb"
+  TargetRubyVersion: '2.6'
+  Include: ['**/*.rb']
   Exclude:
-  - bin/*
-  - ".vendor/**/*"
-  - "**/Gemfile"
-  - "**/Rakefile"
-  - pkg/**/*
-  - spec/fixtures/**/*
-  - vendor/**/*
-  - "**/Puppetfile"
-  - "**/Vagrantfile"
-  - "**/Guardfile"
+    - bin/*
+    - .vendor/**/*
+    - '**/Gemfile'
+    - '**/Rakefile'
+    - pkg/**/*
+    - spec/fixtures/**/*
+    - vendor/**/*
+    - '**/Puppetfile'
+    - '**/Vagrantfile'
+    - '**/Guardfile'
 Layout/LineLength:
   Description: People have wide screens, use them.
   Max: 200
 RSpec/BeforeAfterAll:
   Description: Beware of using after(:all) as it may cause state to leak between tests.
     A necessary evil in acceptance testing.
-  Exclude:
-  - spec/acceptance/**/*.rb
+  Exclude: [spec/acceptance/**/*.rb]
 RSpec/HookArgument:
   Description: Prefer explicit :each argument, matching existing module's style
   EnforcedStyle: each
 RSpec/DescribeSymbol:
-  Exclude:
-  - spec/unit/facter/**/*.rb
+  Exclude: [spec/unit/facter/**/*.rb]
 Style/BlockDelimiters:
   Description: Prefer braces for chaining. Mostly an aesthetical choice. Better to
     be consistent then.
@@ -77,9 +70,7 @@ Style/SymbolArray:
 RSpec/MessageSpies:
   EnforcedStyle: receive
 Style/Documentation:
-  Exclude:
-  - lib/puppet/parser/functions/**/*
-  - spec/**/*
+  Exclude: [lib/puppet/parser/functions/**/*, spec/**/*]
 Style/WordArray:
   EnforcedStyle: brackets
 Performance/AncestorsInclude:
@@ -530,6 +521,8 @@ Lint/DuplicateBranch:
   Enabled: false
 Lint/DuplicateMagicComment:
   Enabled: false
+Lint/DuplicateMatchPattern:
+  Enabled: false
 Lint/DuplicateRegexpCharacterClassElement:
   Enabled: false
 Lint/EmptyBlock:
@@ -646,6 +639,8 @@ Style/ComparableClamp:
   Enabled: false
 Style/ConcatArrayLiterals:
   Enabled: false
+Style/DataInheritance:
+  Enabled: false
 Style/DirEmpty:
   Enabled: false
 Style/DocumentDynamicEvalDefinition:
@@ -713,6 +708,8 @@ Style/RedundantEach:
 Style/RedundantHeredocDelimiterQuotes:
   Enabled: false
 Style/RedundantInitialize:
+  Enabled: false
+Style/RedundantLineContinuation:
   Enabled: false
 Style/RedundantSelfAssignmentBranch:
   Enabled: false
