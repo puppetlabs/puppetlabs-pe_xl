@@ -1,43 +1,40 @@
 ---
 Gemfile:
   required:
-    :development:
-      - gem: bolt
+    ':development':
+      - gem: 'bolt'
         version: '>= 3.10.0'
   optional:
-    :development:
-      - gem: github_changelog_generator
-        version: 1.16.4  # Pinned to latest bug fix version
-      - gem: octokit
-        version: 4.21.0  # Locked due to https://github.com/octokit/octokit.rb/issues/1391
+    ':development':
+      - gem: 'github_changelog_generator'
+        version: '1.16.4' # Pinned to latest bug fix version
+      - gem: 'octokit'
+        version: '4.21.0' # Locked due to https://github.com/octokit/octokit.rb/issues/1391
       # The Faraday requirements in orchestrator_client 0.7.1 causes Bundler to
       # resolve the dependency in unexpected ways and causes issues in CI
       - gem: orchestrator_client
         version: < 0.7.1
 Rakefile:
-  changelog_since_tag: 2.5.0
-  default_disabled_lint_checks:
-    - strict_indent
-    - manifest_whitespace_missing_newline_end_of_file
+  changelog_since_tag: '2.5.0'
+  default_disabled_lint_checks: ['strict_indent','manifest_whitespace_missing_newline_end_of_file']
   extras:
-    - PuppetSyntax.exclude_paths = ["plans/**/*.pp", "spec/acceptance/**/plans/**/*.pp",
-      "vendor/**/*"]
+    - 'PuppetSyntax.exclude_paths = ["plans/**/*.pp", "spec/acceptance/**/plans/**/*.pp", "vendor/**/*"]'
 spec/spec_helper.rb:
-  mock_with: :rspec
+    mock_with: ':rspec'
 .gitignore:
   paths:
-    - .rerun.json
+    - '.rerun.json'
     - '*.tar.gz'
-    - .modules/
-    - .plan_cache.json
-    - .resource_types/
-    - bolt-debug.log
-    - spec/docker/**/*.tar.gz
-    - spec/docker/**/*.asc
-    - spec/docker/**/files/puppet-enterprise*
-    - spec/docker/.task_cache.json
+    - '.modules/'
+    - '.plan_cache.json'
+    - '.resource_types/'
+    - 'bolt-debug.log'
+    - 'spec/docker/**/*.tar.gz'
+    - 'spec/docker/**/*.asc'
+    - 'spec/docker/**/files/puppet-enterprise*'
+    - 'spec/docker/.task_cache.json'
 .github/workflows/auto_release.yml:
-  unmanaged: false
+  unmanaged: false 
 .github/workflows/release.yml:
   unmanaged: false
 .github/workflows/spec.yml:
@@ -48,7 +45,7 @@ spec/spec_helper.rb:
   unmanaged: false
 .travis.yml:
   delete: true
-.gitlab-ci.yml:
+".gitlab-ci.yml":
   delete: true
 appveyor.yml:
   delete: true

@@ -19,6 +19,7 @@
 /spec/fixtures/modules/*
 /tmp/
 /vendor/
+/.vendor/
 /convert_report.txt
 /update_report.txt
 .DS_Store
@@ -26,12 +27,15 @@
 .envrc
 /inventory.yaml
 /spec/fixtures/litmus_inventory.yaml
+.resource_types
+.modules
+.task_cache.json
+.plan_cache.json
 .rerun.json
+bolt-debug.log
 *.tar.gz
 .modules/
-.plan_cache.json
 .resource_types/
-bolt-debug.log
 spec/docker/**/*.tar.gz
 spec/docker/**/*.asc
 spec/docker/**/files/puppet-enterprise*

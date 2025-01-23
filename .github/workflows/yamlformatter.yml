@@ -22,8 +22,9 @@ jobs:
         id: changed_yaml_files
         run: |
           echo ${{ steps.get_file_changes.outputs.files }} | xargs -n 1 | grep -E "\.yml$|\.yaml$" > changed_files.txt
-          # Remove dependabot.yml if it exists in the list
-          sed -i '/.github\/dependabot.yml/d' changed_files.txt || true
+          # Remove dependabot.yml and sync.yml if they exist in the list
+            sed -i '/.github\/dependabot.yml/d' changed_files.txt || true
+            sed -i '/.sync.yml/d' changed_files.txt || true
           yaml_files=$(cat changed_files.txt | tr '\n' ' ')
           rm changed_files.txt
           echo "files=${yaml_files}" >> $GITHUB_OUTPUT
