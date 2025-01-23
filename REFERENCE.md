@@ -16,6 +16,7 @@
 
 ### Functions
 
+* [`peadm::amend_recovery_defaults_by_pe_version`](#peadm--amend_recovery_defaults_by_pe_version)
 * [`peadm::assert_supported_architecture`](#peadm--assert_supported_architecture): Assert that the architecture given is a supported one
 * [`peadm::assert_supported_bolt_version`](#peadm--assert_supported_bolt_version): Assert that the Bolt executable running PEAdm is a supported version
 * [`peadm::assert_supported_pe_version`](#peadm--assert_supported_pe_version): Assert that the PE version given is supported by PEAdm
@@ -40,6 +41,7 @@
 * [`peadm::recovery_opts_all`](#peadm--recovery_opts_all)
 * [`peadm::recovery_opts_default`](#peadm--recovery_opts_default)
 * [`peadm::update_pe_conf`](#peadm--update_pe_conf): Update the pe.conf file on a target with the provided hash
+* [`peadm::validated_pe_version_for_backup_restore`](#peadm--validated_pe_version_for_backup_restore): Verify that *pe_version* string is a valid SemVer. If not, warn, and return "0.0.0" as a permissive default.
 * [`peadm::wait_until_service_ready`](#peadm--wait_until_service_ready): A convenience function to help remember port numbers for services and handle running the wait_until_service_ready task
 
 ### Data types
@@ -139,6 +141,36 @@ Supported use cases:
 * `peadm::util::update_db_setting`: Make updates to PuppetDB database settings
 
 ## Functions
+
+### <a name="peadm--amend_recovery_defaults_by_pe_version"></a>`peadm::amend_recovery_defaults_by_pe_version`
+
+Type: Puppet Language
+
+The peadm::amend_recovery_defaults_by_pe_version function.
+
+#### `peadm::amend_recovery_defaults_by_pe_version(Hash $base_opts, Peadm::Pe_version $pe_version, Boolean $opt_value)`
+
+The peadm::amend_recovery_defaults_by_pe_version function.
+
+Returns: `Any`
+
+##### `base_opts`
+
+Data type: `Hash`
+
+
+
+##### `pe_version`
+
+Data type: `Peadm::Pe_version`
+
+
+
+##### `opt_value`
+
+Data type: `Boolean`
+
+
 
 ### <a name="peadm--assert_supported_architecture"></a>`peadm::assert_supported_architecture`
 
@@ -788,11 +820,17 @@ Type: Puppet Language
 
 The peadm::migration_opts_default function.
 
-#### `peadm::migration_opts_default()`
+#### `peadm::migration_opts_default(Peadm::Pe_version $pe_version)`
 
 The peadm::migration_opts_default function.
 
 Returns: `Any`
+
+##### `pe_version`
+
+Data type: `Peadm::Pe_version`
+
+
 
 ### <a name="peadm--node_manager_yaml_location"></a>`peadm::node_manager_yaml_location`
 
@@ -872,11 +910,17 @@ Type: Puppet Language
 
 The peadm::recovery_opts_all function.
 
-#### `peadm::recovery_opts_all()`
+#### `peadm::recovery_opts_all(Peadm::Pe_version $pe_version)`
 
 The peadm::recovery_opts_all function.
 
 Returns: `Any`
+
+##### `pe_version`
+
+Data type: `Peadm::Pe_version`
+
+
 
 ### <a name="peadm--recovery_opts_default"></a>`peadm::recovery_opts_default`
 
@@ -884,11 +928,17 @@ Type: Puppet Language
 
 The peadm::recovery_opts_default function.
 
-#### `peadm::recovery_opts_default()`
+#### `peadm::recovery_opts_default(Peadm::Pe_version $pe_version)`
 
 The peadm::recovery_opts_default function.
 
 Returns: `Any`
+
+##### `pe_version`
+
+Data type: `Peadm::Pe_version`
+
+
 
 ### <a name="peadm--update_pe_conf"></a>`peadm::update_pe_conf`
 
@@ -913,6 +963,26 @@ The target to update the pe.conf file on
 Data type: `Hash`
 
 The hash to update the pe.conf file with
+
+### <a name="peadm--validated_pe_version_for_backup_restore"></a>`peadm::validated_pe_version_for_backup_restore`
+
+Type: Puppet Language
+
+Verify that *pe_version* string is a valid SemVer.
+If not, warn, and return "0.0.0" as a permissive default.
+
+#### `peadm::validated_pe_version_for_backup_restore(Optional[String] $pe_version)`
+
+Verify that *pe_version* string is a valid SemVer.
+If not, warn, and return "0.0.0" as a permissive default.
+
+Returns: `Any`
+
+##### `pe_version`
+
+Data type: `Optional[String]`
+
+
 
 ### <a name="peadm--wait_until_service_ready"></a>`peadm::wait_until_service_ready`
 
@@ -1033,6 +1103,8 @@ Struct[{
     'orchestrator' => Optional[Boolean],
     'puppetdb'     => Optional[Boolean],
     'rbac'         => Optional[Boolean],
+    'hac'          => Optional[Boolean],
+    'patching'     => Optional[Boolean],
 }]
 ```
 

@@ -34,7 +34,7 @@ plan peadm::restore (
   # try to load the cluster configuration by running peadm::get_peadm_config, but allow for errors to happen
   $_cluster = run_task('peadm::get_peadm_config', $targets, { '_catch_errors' => true }).first.value
 
-  if $_cluster == undef or getvar('_cluster.params') == undef {
+  if $_cluster == undef or getvar('_cluster.params') == undef or getvar('_cluster.pe_version') == undef {
     # failed to get cluster config, load from backup
     out::message('Failed to get cluster configuration, loading from backup...')
     $result = download_file("${recovery_directory}/peadm/peadm_config.json", 'peadm_config.json', $targets).first.value
@@ -59,11 +59,13 @@ plan peadm::restore (
     getvar('cluster.params.compiler_hosts'),
   )
 
+  $pe_version = peadm::validated_pe_version_for_backup_restore(getvar('cluster.pe_version'))
+
   $recovery_opts = $restore_type? {
-    'recovery'     => peadm::recovery_opts_default(),
+    'recovery'     => peadm::recovery_opts_default($pe_version),
     'recovery-db'  => { 'puppetdb' => true, },
-    'migration'    => peadm::migration_opts_default(),
-    'custom'       => peadm::recovery_opts_all() + $restore,
+    'migration'    => peadm::migration_opts_default($pe_version),
+    'custom'       => peadm::recovery_opts_all($pe_version) + $restore,
   }
 
   $primary_target   = peadm::get_targets(getvar('cluster.params.primary_host'), 1)
@@ -97,6 +99,10 @@ plan peadm::restore (
     'activity'     => [$primary_target],
     'rbac'         => [$primary_target],
     'puppetdb'     => $puppetdb_postgresql_targets,
+    # (host-action-collector db will be filtered for pe version by recovery_opts)
+    'hac'          => $primary_target,
+    # (patching db will be filtered for pe version by recovery_opts)
+    'patching'     => $primary_target,
   }.filter |$key,$_| {
     $recovery_opts[$key] == true
   }
@@ -203,7 +209,7 @@ plan peadm::restore (
   if getvar('recovery_opts.orchestrator') {
     out::message('# Restoring orchestrator secret keys')
     run_command(@("CMD"/L), $primary_target)
-      cp -rp ${shellquote($recovery_directory)}/orchestrator/secrets/* /etc/puppetlabs/orchestration-services/conf.d/secrets/ 
+      cp -rp ${shellquote($recovery_directory)}/orchestrator/secrets/* /etc/puppetlabs/orchestration-services/conf.d/secrets/
       | CMD
   }
 # lint:endignore

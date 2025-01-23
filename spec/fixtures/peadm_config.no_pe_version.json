@@ -1,4 +1,3 @@
 {
-  "pe_version" : "2023.7.0",
   "params": { "primary_host": "primary", "primary_postgresql_host": "postgres" }
 }

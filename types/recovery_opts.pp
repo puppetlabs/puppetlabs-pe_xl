@@ -7,4 +7,6 @@ type Peadm::Recovery_opts = Struct[{
     'orchestrator' => Optional[Boolean],
     'puppetdb'     => Optional[Boolean],
     'rbac'         => Optional[Boolean],
+    'hac'          => Optional[Boolean],
+    'patching'     => Optional[Boolean],
 }]

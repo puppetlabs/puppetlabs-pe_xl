@@ -1,5 +1,7 @@
-function peadm::recovery_opts_default () {
-  {
+function peadm::recovery_opts_default (
+  Peadm::Pe_version $pe_version,
+) {
+  $base_opts = {
     'activity'     => false,
     'ca'           => true,
     'classifier'   => false,
@@ -9,4 +11,5 @@ function peadm::recovery_opts_default () {
     'puppetdb'     => true,
     'rbac'         => false,
   }
+  peadm::amend_recovery_defaults_by_pe_version($base_opts, $pe_version, false)
 }

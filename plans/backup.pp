@@ -35,10 +35,12 @@ plan peadm::backup (
     getvar('cluster.params.compiler_hosts'),
   )
 
+  $pe_version = peadm::validated_pe_version_for_backup_restore(getvar('cluster.pe_version'))
+
   $recovery_opts = $backup_type? {
-    'recovery'  => peadm::recovery_opts_default(),
-    'migration' => peadm::migration_opts_default(),
-    'custom'    => peadm::recovery_opts_all() + $backup,
+    'recovery'  => peadm::recovery_opts_default($pe_version),
+    'migration' => peadm::migration_opts_default($pe_version),
+    'custom'    => peadm::recovery_opts_all($pe_version) + $backup,
   }
 
   $timestamp = Timestamp.new().strftime('%Y-%m-%dT%H%M%SZ')
@@ -55,6 +57,10 @@ plan peadm::backup (
     'activity'     => $primary_target,
     'rbac'         => $primary_target,
     'puppetdb'     => $puppetdb_postgresql_target,
+    # (host-action-collector db will be filtered for pe version by recovery_opts)
+    'hac'          => $primary_target,
+    # (patching db will be filtered for pe version by recovery_opts)
+    'patching'     => $primary_target,
   }.filter |$key,$_| {
     $recovery_opts[$key] == true
   }
