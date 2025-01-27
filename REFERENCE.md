@@ -21,6 +21,7 @@
 * [`peadm::assert_supported_pe_version`](#peadm--assert_supported_pe_version): Assert that the PE version given is supported by PEAdm
 * [`peadm::bolt_version`](#peadm--bolt_version)
 * [`peadm::certname`](#peadm--certname): Return the certname of the given target-like input
+* [`peadm::check_availability`](#peadm--check_availability): check if a group of targets are reachable for bolt
 * [`peadm::check_version_and_known_hosts`](#peadm--check_version_and_known_hosts): Checks PE verison and warns about setting r10k_known_hosts
 * [`peadm::convert_hash`](#peadm--convert_hash): converts two arrays into hash
 * [`peadm::convert_status`](#peadm--convert_status): Transforms a value in a human readable status with or without colors
@@ -291,6 +292,30 @@ Variant[Target,
 ```
 
 
+
+### <a name="peadm--check_availability"></a>`peadm::check_availability`
+
+Type: Puppet Language
+
+check if a group of targets are reachable for bolt
+
+#### `peadm::check_availability(TargetSpec $targets, Boolean $output_details = true)`
+
+The peadm::check_availability function.
+
+Returns: `Integer` counter for unavailable nodes
+
+##### `targets`
+
+Data type: `TargetSpec`
+
+list of targets that are going to be checked
+
+##### `output_details`
+
+Data type: `Boolean`
+
+flag to enable/disable error output for failed nodes
 
 ### <a name="peadm--check_version_and_known_hosts"></a>`peadm::check_version_and_known_hosts`
 
