@@ -2,7 +2,7 @@
 #
 # @summary Configure first-time classification and DR setup
 #
-# @param compiler_pool_address 
+# @param compiler_pool_address
 #   The service address used by agents to connect to compilers, or the Puppet
 #   service. Typically this is a load balancer.
 # @param internal_compiler_a_pool_address
@@ -111,6 +111,11 @@ plan peadm::subplans::configure (
   }
 
   if $arch['disaster-recovery'] {
+    $topology =  $arch['architecture']? {
+      'standard' => 'mono',
+      default    => 'mono-with-compile',
+    }
+
     # Run the PE Replica Provision
     run_task('peadm::provision_replica', $primary_target,
       replica    => $replica_target.peadm::certname(),
@@ -120,6 +125,7 @@ plan peadm::subplans::configure (
       # probably gets "starting", but fails out because that's not "running".
       # Can remove flag when that issue is fixed.
       legacy     => true,
+      topology   => $topology,
     )
   }
 
