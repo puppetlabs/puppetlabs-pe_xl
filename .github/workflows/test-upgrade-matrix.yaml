@@ -2,6 +2,7 @@
 name: Upgrade test matrix
 on:
   pull_request:
+    types: [review_requested]
     paths:
       - .github/workflows/**/*
       - spec/**/*
