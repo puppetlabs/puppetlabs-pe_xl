@@ -8,6 +8,10 @@
     "pe_main": {
       "type": "String",
       "description": "The PE Main server"
+    },
+    "pe_version": {
+      "type": "String",
+      "description": "The PE version"
     }
   },
   "input_method": "stdin",
