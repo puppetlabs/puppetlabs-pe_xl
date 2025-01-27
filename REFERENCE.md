@@ -1814,7 +1814,6 @@ The following parameters are available in the `peadm::add_replica` plan:
 
 * [`primary_host`](#-peadm--add_replica--primary_host)
 * [`replica_host`](#-peadm--add_replica--replica_host)
-* [`replica_postgresql_host`](#-peadm--add_replica--replica_postgresql_host)
 * [`token_file`](#-peadm--add_replica--token_file)
 
 ##### <a name="-peadm--add_replica--primary_host"></a>`primary_host`
@@ -1828,15 +1827,6 @@ Data type: `Peadm::SingleTargetSpec`
 Data type: `Peadm::SingleTargetSpec`
 
 - The hostname and certname of the replica VM
-
-##### <a name="-peadm--add_replica--replica_postgresql_host"></a>`replica_postgresql_host`
-
-Data type: `Optional[Peadm::SingleTargetSpec]`
-
-- The hostname and certname of the host with the replica PE-PosgreSQL database.
-Can be a separate host in an XL architecture, or undef in Standard or Large.
-
-Default value: `undef`
 
 ##### <a name="-peadm--add_replica--token_file"></a>`token_file`
 

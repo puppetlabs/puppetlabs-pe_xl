@@ -4,23 +4,17 @@
 #   2: The existing replica is broken, we have a fresh new VM we want to provision the replica to.
 # @param primary_host - The hostname and certname of the primary Puppet server
 # @param replica_host - The hostname and certname of the replica VM
-# @param replica_postgresql_host - The hostname and certname of the host with the replica PE-PosgreSQL database.
-#   Can be a separate host in an XL architecture, or undef in Standard or Large.
 # @param token_file - (optional) the token file in a different location than the default.
 plan peadm::add_replica(
   # Standard or Large
   Peadm::SingleTargetSpec           $primary_host,
   Peadm::SingleTargetSpec           $replica_host,
 
-  # Extra Large
-  Optional[Peadm::SingleTargetSpec] $replica_postgresql_host = undef,
-
   # Common Configuration
   Optional[String] $token_file = undef,
 ) {
   $primary_target             = peadm::get_targets($primary_host, 1)
   $replica_target             = peadm::get_targets($replica_host, 1)
-  $replica_postgresql_target  = peadm::get_targets($replica_postgresql_host, 1)
 
   $code_manager_enabled = run_task('peadm::code_manager_enabled', $primary_target).first.value['code_manager_enabled']
 
@@ -28,13 +22,15 @@ plan peadm::add_replica(
     fail('Code Manager must be enabled to add a replica. Please refer to the docs for more information on enabling Code Manager.')
   }
 
+  # Get current peadm config to ensure we forget active replicas
+  $peadm_config = run_task('peadm::get_peadm_config', $primary_target).first.value
+
+  $replica_postgresql_target = $peadm_config['params']['replica_postgresql_host']
+
   run_command('systemctl stop puppet.service', peadm::flatten_compact([
         $primary_target,
         $replica_postgresql_target,
   ]))
-
-  # Get current peadm config to ensure we forget active replicas
-  $peadm_config = run_task('peadm::get_peadm_config', $primary_target).first.value
 
   # Make list of all possible replicas, configured and provided
   $replicas = peadm::flatten_compact([
@@ -65,7 +61,7 @@ plan peadm::add_replica(
   # Wrap these things that operate on replica_postgresql_target in an if statement
   # to avoid failures retrieving PSQL version because you can't operate functions
   # on a return value of nil.
-  if $replica_postgresql_host {
+  if $replica_postgresql_target {
     # On the PE-PostgreSQL server in the <replacement-avail-group-letter> group
     $psql_version = run_task('peadm::get_psql_version', $replica_postgresql_target).first.value['version']
 

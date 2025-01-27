@@ -64,12 +64,6 @@ The plan performs the following steps:
 - **Description:**  
   The hostname and certname of the replica VM.
 
-### `primary_postgresql_host`
-
-- **Type:** `Optional[Peadm::SingleTargetSpec]`
-- **Description:**  
-  The target specification for the primary PostgreSQL host that the new replica will synchronize with. This is the database server from which the replica will replicate data.
-
 ### `token_file`
 
 - **Type:** `Optional[String]`

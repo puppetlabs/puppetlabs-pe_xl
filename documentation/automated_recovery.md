@@ -14,7 +14,6 @@ Manual procedures are documented in [recovery.md](recovery.md)
 This procedure uses the following placeholder references.
 
 * _\<primary-server-fqdn\>_ - The FQDN and certname of the primary Puppet server
-* _\<replica-postgres-server-fqdn\>_ - The FQDN and certname of the PE-PostgreSQL server which resides in the same availability group as the replacement replica Puppet server
 * _\<replacement-replica-fqdn\>_ - The FQDN and certname of the replacement replica Puppet server
 
 1. Run `peadm::add_replica` plan to deploy replacement replica Puppet server
@@ -24,7 +23,7 @@ This procedure uses the following placeholder references.
 
     2. For Extra Large deployments
 
-                bolt plan run peadm::add_replica primary_host=<primary-server-fqdn> replica_host=<replacement-replica-fqdn> replica_postgresql_host=<replica-postgres-server-fqdn>
+                bolt plan run peadm::add_replica primary_host=<primary-server-fqdn> replica_host=<replacement-replica-fqdn>
 
 ## Replace failed PE-PostgreSQL server (A or B side)
 
