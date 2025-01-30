@@ -77,12 +77,16 @@ class peadm::setup::node_manager (
     parent    => 'PE Infrastructure',
     data      => $compiler_pool_address_data,
     variables => { 'pe_master' => true },
+    rule      => ['or',
+      ['=', ['trusted', 'extensions', 'pp_auth_role'], 'legacy_compiler'],
+      ['=', ['trusted', 'extensions', 'pp_auth_role'], 'pe_compiler'],
+    ],
   }
 
   # PE Compiler group comes from default PE and already has the pe compiler role
   node_group { 'PE Compiler':
     parent => 'PE Master',
-    rule   => ['and', ['=', ['trusted', 'extensions', peadm::oid('peadm_legacy_compiler')], 'false']],
+    rule   => ['and', ['=', ['trusted', 'extensions', peadm::oid('pp_auth_role')], 'pe_compiler']],
   }
 
   # This group should pin the primary, and also map to any pe-postgresql nodes
@@ -121,7 +125,6 @@ class peadm::setup::node_manager (
     rule    => ['and',
       ['=', ['trusted', 'extensions', 'pp_auth_role'], 'pe_compiler'],
       ['=', ['trusted', 'extensions', peadm::oid('peadm_availability_group')], 'A'],
-      ['=', ['trusted', 'extensions', peadm::oid('peadm_legacy_compiler')], 'false'],
     ],
     classes => {
       'puppet_enterprise::profile::puppetdb' => {
@@ -180,7 +183,6 @@ class peadm::setup::node_manager (
     rule    => ['and',
       ['=', ['trusted', 'extensions', 'pp_auth_role'], 'pe_compiler'],
       ['=', ['trusted', 'extensions', peadm::oid('peadm_availability_group')], 'B'],
-      ['=', ['trusted', 'extensions', peadm::oid('peadm_legacy_compiler')], 'false'],
     ],
     classes => {
       'puppet_enterprise::profile::puppetdb' => {
@@ -203,10 +205,7 @@ class peadm::setup::node_manager (
 
   node_group { 'PE Legacy Compiler':
     parent  => 'PE Master',
-    rule    => ['and',
-      ['=', ['trusted', 'extensions', 'pp_auth_role'], 'pe_compiler'],
-      ['=', ['trusted', 'extensions', peadm::oid('peadm_legacy_compiler')], 'true'],
-    ],
+    rule    => ['=', ['trusted', 'extensions', 'pp_auth_role'], 'legacy_compiler'],
     classes => {
       'puppet_enterprise::profile::master'   => {
         'puppetdb_host' => [$internal_compiler_a_pool_address, $internal_compiler_b_pool_address].filter |$_| { $_ },
@@ -221,9 +220,8 @@ class peadm::setup::node_manager (
     ensure  => 'present',
     parent  => 'PE Legacy Compiler',
     rule    => ['and',
-      ['=', ['trusted', 'extensions', 'pp_auth_role'], 'pe_compiler'],
+      ['=', ['trusted', 'extensions', 'pp_auth_role'], 'legacy_compiler'],
       ['=', ['trusted', 'extensions', peadm::oid('peadm_availability_group')], 'A'],
-      ['=', ['trusted', 'extensions', peadm::oid('peadm_legacy_compiler')], 'true'],
     ],
     classes => {
       'puppet_enterprise::profile::master'   => {
@@ -245,9 +243,8 @@ class peadm::setup::node_manager (
     ensure  => 'present',
     parent  => 'PE Legacy Compiler',
     rule    => ['and',
-      ['=', ['trusted', 'extensions', 'pp_auth_role'], 'pe_compiler'],
+      ['=', ['trusted', 'extensions', 'pp_auth_role'], 'legacy_compiler'],
       ['=', ['trusted', 'extensions', peadm::oid('peadm_availability_group')], 'B'],
-      ['=', ['trusted', 'extensions', peadm::oid('peadm_legacy_compiler')], 'true'],
     ],
     classes => {
       'puppet_enterprise::profile::master'   => {
