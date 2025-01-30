@@ -10,7 +10,8 @@ require 'puppet'
 class NodeGroupUnpin
   def initialize(params)
     @params = params
-    raise "Missing required parameter 'node_certname'" unless @params['node_certname']
+    raise "Missing required parameter 'node_certnames'" unless @params['node_certnames']
+    raise "'node_certnames' must be an array" unless @params['node_certnames'].is_a?(Array)
     raise "Missing required parameter 'group_name'" unless @params['group_name']
     @auth = YAML.load_file('/etc/puppetlabs/puppet/classifier.yaml')
   rescue Errno::ENOENT
@@ -44,12 +45,12 @@ class NodeGroupUnpin
     end
   end
 
-  def unpin_node(group, node)
+  def unpin_node(group, nodes)
     raise 'Invalid group object' unless group.is_a?(Hash) && group['id'] && group['name']
 
     net = https_client
     begin
-      data = { "nodes": [node] }.to_json
+      data = { "nodes": nodes }.to_json
       url = "/classifier-api/v1/groups/#{group['id']}/unpin"
 
       req = Net::HTTP::Post.new(url)
@@ -60,11 +61,11 @@ class NodeGroupUnpin
 
       case res.code
       when '204'
-        puts "Successfully unpinned node '#{node}' from group '#{group['name']}'"
+        puts "Successfully unpinned nodes '#{nodes.join(', ')}' from group '#{group['name']}'"
       else
         begin
           error_body = JSON.parse(res.body.to_s)
-          raise "Failed to unpin node: #{error_body['kind'] || error_body}"
+          raise "Failed to unpin nodes: #{error_body['kind'] || error_body}"
         rescue JSON::ParserError
           raise "Invalid response from server (status #{res.code}): #{res.body}"
         end
@@ -98,11 +99,11 @@ class NodeGroupUnpin
 
   def execute!
     group_name = @params['group_name']
-    node_certname = @params['node_certname']
+    node_certnames = @params['node_certnames']
     group = groups.dig(group_name)
     if group
-      unpin_node(group, node_certname)
-      puts "Unpinned #{node_certname} from #{group_name}"
+      unpin_node(group, node_certnames)
+      puts "Unpinned #{node_certnames.join(', ')} from #{group_name}"
     else
       puts "Group #{group_name} not found"
     end

@@ -1,13 +1,13 @@
 {
-  "description": "Unpins a node from a specified PE node group",
+  "description": "Unpins nodes from a specified PE node group",
   "parameters": {
-    "node_certname": {
-      "type": "String",
-      "description": "The certname of the node to unpin"
+    "node_certnames": {
+      "type": "Array[String]",
+      "description": "The certnames of the nodes to unpin"
     },
     "group_name": {
       "type": "String",
-      "description": "The name of the node group to unpin the node from"
+      "description": "The name of the node group to unpin the nodes from"
     }
   },
   "input_method": "stdin",

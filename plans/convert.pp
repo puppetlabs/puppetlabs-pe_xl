@@ -282,12 +282,10 @@ plan peadm::convert (
 
       # Unpin legacy compilers from PE Master group
       if $legacy_compiler_targets {
-        $legacy_compiler_targets.each |$target| {
-          run_task('peadm::node_group_unpin', $primary_target,
-            node_certname => $target.peadm::certname(),
-            group_name    => 'PE Master',
-          )
-        }
+        run_task('peadm::node_group_unpin', $primary_target,
+          node_certnames => $legacy_compiler_targets.map |$target| { $target.peadm::certname() },
+          group_name    => 'PE Master',
+        )
       }
     }
     else {

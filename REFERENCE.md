@@ -74,7 +74,7 @@
 * [`infrastatus`](#infrastatus): Runs puppet infra status and returns the output
 * [`mkdir_p_file`](#mkdir_p_file): Create a file with the specified content at the specified location
 * [`mv`](#mv): Wrapper task for mv command
-* [`node_group_unpin`](#node_group_unpin): Unpins a node from a specified PE node group
+* [`node_group_unpin`](#node_group_unpin): Unpins nodes from a specified PE node group
 * [`os_identification`](#os_identification): Return the operating system runnin gon the target as a string
 * [`pe_install`](#pe_install): Install Puppet Enterprise from a tarball
 * [`pe_ldap_config`](#pe_ldap_config): Set the ldap config in the PE console
@@ -1327,23 +1327,23 @@ New path of file
 
 ### <a name="node_group_unpin"></a>`node_group_unpin`
 
-Unpins a node from a specified PE node group
+Unpins nodes from a specified PE node group
 
 **Supports noop?** false
 
 #### Parameters
 
-##### `node_certname`
+##### `node_certnames`
 
-Data type: `String`
+Data type: `Array[String]`
 
-The certname of the node to unpin
+The certnames of the nodes to unpin
 
 ##### `group_name`
 
 Data type: `String`
 
-The name of the node group to unpin the node from
+The name of the node group to unpin the nodes from
 
 ### <a name="os_identification"></a>`os_identification`
 
