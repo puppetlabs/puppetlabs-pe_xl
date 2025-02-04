@@ -7,6 +7,6 @@ function peadm::migration_opts_default () {
     'config'       => false,
     'orchestrator' => true,
     'puppetdb'     => true,
-    'rbac'         => true,
+    'rbac'         => false,
   }
 }

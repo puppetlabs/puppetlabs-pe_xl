@@ -12,7 +12,7 @@ plan peadm::backup (
   Peadm::SingleTargetSpec     $targets,
 
   # backup type determines the backup options
-  Enum['recovery', 'custom']  $backup_type = 'recovery',
+  Enum['recovery', 'custom', 'migration']  $backup_type = 'recovery',
 
   # Which data to backup
   Peadm::Recovery_opts        $backup = {},

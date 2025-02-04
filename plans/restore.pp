@@ -12,7 +12,7 @@ plan peadm::restore (
   Peadm::SingleTargetSpec $targets,
 
   # restore type determines the restore options
-  Enum['recovery', 'recovery-db', 'custom'] $restore_type = 'recovery',
+  Enum['recovery', 'recovery-db', 'custom', 'migration'] $restore_type = 'recovery',
 
   # Which data to restore
   Peadm::Recovery_opts $restore = {},
