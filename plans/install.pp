@@ -143,6 +143,8 @@ plan peadm::install (
     final_agent_state                => $final_agent_state,
   )
 
+  run_task('peadm::update_pe_master_rules', $primary_host)
+
   # Return a string banner reporting on what was done
   return([$install_result, $configure_result])
 }

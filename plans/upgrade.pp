@@ -440,5 +440,7 @@ plan peadm::upgrade (
 
   peadm::check_version_and_known_hosts($current_pe_version, $_version, $r10k_known_hosts)
 
+  run_task('peadm::update_pe_master_rules', $primary_target)
+
   return("Upgrade of Puppet Enterprise ${arch['architecture']} completed.")
 }

@@ -102,7 +102,7 @@ plan peadm::convert_compiler_to_legacy (
         run_plan('peadm::modify_certificate', $compiler_targets,
           primary_host   => $primary_target,
           add_extensions => {
-            peadm::oid('pp_auth_role')    => 'legacy_compiler',
+            peadm::oid('pp_auth_role')    => 'pe_compiler_legacy',
           },
         )
       },
@@ -110,7 +110,7 @@ plan peadm::convert_compiler_to_legacy (
         run_plan('peadm::modify_certificate', $legacy_compiler_a_targets,
           primary_host   => $primary_target,
           add_extensions => {
-            peadm::oid('pp_auth_role')             => 'legacy_compiler',
+            peadm::oid('pp_auth_role')             => 'pe_compiler_legacy',
             peadm::oid('peadm_availability_group') => 'A',
           },
         )
@@ -119,7 +119,7 @@ plan peadm::convert_compiler_to_legacy (
         run_plan('peadm::modify_certificate', $legacy_compiler_b_targets,
           primary_host   => $primary_target,
           add_extensions => {
-            peadm::oid('pp_auth_role')             => 'legacy_compiler',
+            peadm::oid('pp_auth_role')             => 'pe_compiler_legacy',
             peadm::oid('peadm_availability_group') => 'B',
           },
         )

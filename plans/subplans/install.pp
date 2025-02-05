@@ -301,7 +301,7 @@ plan peadm::subplans::install (
     background('compiler-a-csr.yaml') || {
       run_plan('peadm::util::insert_csr_extension_requests', $legacy_a_targets,
         extension_requests => {
-          peadm::oid('pp_auth_role')             => 'legacy_compiler',
+          peadm::oid('pp_auth_role')             => 'pe_compiler_legacy',
           peadm::oid('peadm_availability_group') => 'A',
         }
       )
@@ -309,7 +309,7 @@ plan peadm::subplans::install (
     background('compiler-b-csr.yaml') || {
       run_plan('peadm::util::insert_csr_extension_requests', $legacy_b_targets,
         extension_requests => {
-          peadm::oid('pp_auth_role')             => 'legacy_compiler',
+          peadm::oid('pp_auth_role')             => 'pe_compiler_legacy',
           peadm::oid('peadm_availability_group') => 'B',
         }
       )

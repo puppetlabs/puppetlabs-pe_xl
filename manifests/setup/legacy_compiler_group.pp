@@ -9,11 +9,10 @@ class peadm::setup::legacy_compiler_group (
   }
 
   node_group { 'PE Legacy Compiler':
-    ensure         => 'present',
-    parent         => 'PE Master',
-    purge_behavior => 'classes',
-    rule           => ['=', ['trusted', 'extensions', 'pp_auth_role'], 'legacy_compiler'],
-    classes        => {
+    ensure  => 'present',
+    parent  => 'PE Infrastructure',
+    rule    => ['=', ['trusted', 'extensions', 'pp_auth_role'], 'pe_compiler_legacy'],
+    classes => {
       'puppet_enterprise::profile::master' => {
         'puppetdb_host'               => [$internal_compiler_a_pool_address, $internal_compiler_b_pool_address].filter |$_| { $_ },
         'puppetdb_port'               => [8081],
@@ -24,20 +23,19 @@ class peadm::setup::legacy_compiler_group (
   }
 
   node_group { 'PE Legacy Compiler Group A':
-    ensure         => 'present',
-    parent         => 'PE Legacy Compiler',
-    purge_behavior => 'classes',
-    rule           => ['and',
-      ['=', ['trusted', 'extensions', 'pp_auth_role'], 'legacy_compiler'],
+    ensure  => 'present',
+    parent  => 'PE Legacy Compiler',
+    rule    => ['and',
+      ['=', ['trusted', 'extensions', 'pp_auth_role'], 'pe_compiler_legacy'],
       ['=', ['trusted', 'extensions', peadm::oid('peadm_availability_group')], 'A'],
     ],
-    classes        => {
+    classes => {
       'puppet_enterprise::profile::master' => {
         'puppetdb_host' => [$internal_compiler_b_pool_address, $internal_compiler_a_pool_address].filter |$_| { $_ },
         'puppetdb_port' => [8081],
       },
     },
-    data           => {
+    data    => {
       'puppet_enterprise::profile::master::puppetdb' => {
         'ha_enabled_replicas' => [],
       },
@@ -49,7 +47,7 @@ class peadm::setup::legacy_compiler_group (
     parent         => 'PE Legacy Compiler',
     purge_behavior => 'classes',
     rule           => ['and',
-      ['=', ['trusted', 'extensions', 'pp_auth_role'], 'legacy_compiler'],
+      ['=', ['trusted', 'extensions', 'pp_auth_role'], 'pe_compiler_legacy'],
       ['=', ['trusted', 'extensions', peadm::oid('peadm_availability_group')], 'B'],
     ],
     classes        => {
