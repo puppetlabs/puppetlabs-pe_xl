@@ -136,6 +136,26 @@ plan peadm::upgrade (
   peadm::assert_supported_pe_version($_version, $permit_unsafe_versions)
 
   # Gather certificate extension information from all systems
+  $cert_extensions_temp = run_task('peadm::cert_data', $all_targets).reduce({}) |$memo,$result| {
+    $memo + { $result.target.peadm::certname => $result['extensions'] }
+  }
+
+  # Add legacy compiler role to compilers that are missing it
+  $legacy_compiler_targets = $cert_extensions_temp.filter |$name,$exts| {
+    ($name in $compiler_targets.map |$t| { $t.name }) and
+    ($exts[peadm::oid('peadm_legacy_compiler')] != undef) and
+    ($exts[peadm::oid('peadm_legacy_compiler')] == 'true') and
+    ($exts['pp_auth_role'] != 'pe_compiler_legacy')
+  }.keys
+
+  run_plan('peadm::modify_certificate', $legacy_compiler_targets,
+    primary_host   => $primary_target,
+    add_extensions => {
+      'pp_auth_role' => 'pe_compiler_legacy',
+    },
+  )
+
+  # Gather certificate extension information from all systems
   $cert_extensions = run_task('peadm::cert_data', $all_targets).reduce({}) |$memo,$result| {
     $memo + { $result.target.peadm::certname => $result['extensions'] }
   }
