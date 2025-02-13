@@ -1,5 +1,5 @@
 ---
-name: Install test matrix
+name: Test replace failed PostgreSQL
 on:
   pull_request:
     paths:
@@ -25,7 +25,7 @@ on:
     branches: [main]
   workflow_dispatch: {}
 jobs:
-  test-install:
+  test-replace-failed-postgresql:
     name: PE ${{ matrix.version }} ${{ matrix.architecture }} on ${{ matrix.image }}
     runs-on: ubuntu-20.04
     env:
@@ -35,12 +35,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        architecture: [standard-with-dr, large, extra-large-with-dr]
-        version: [2019.8.12, 2021.7.9, 2023.8.1, 2025.0.0]
+        architecture: [extra-large-with-dr-and-spare-replica]
+        install_architecture: [extra-large-with-dr]
+        version: [2023.8.0]  # can change to test multiple versions once this one works
         image: [almalinux-cloud/almalinux-8]
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
       - name: Activate Ruby 2.7
         uses: ruby/setup-ruby@v1
         with:
@@ -82,10 +85,28 @@ jobs:
           bundle exec bolt plan run peadm_spec::install_test_cluster \
             --inventoryfile spec/fixtures/litmus_inventory.yaml \
             --modulepath spec/fixtures/modules \
-            architecture=${{ matrix.architecture }} \
+            architecture=${{ matrix.install_architecture }} \
             version=${{ matrix.version }} \
             console_password=${{ secrets.CONSOLE_PASSWORD }}
-      - name: Tear down test cluster
+      - name: Replace failed PostgreSQL
+        run: |
+          echo ::group::prepare
+            mkdir -p $HOME/.ssh
+            echo 'Host *'                      >  $HOME/.ssh/config
+            echo '    ServerAliveInterval 150' >> $HOME/.ssh/config
+            echo '    ServerAliveCountMax 2'   >> $HOME/.ssh/config
+            bundle exec rake spec_prep
+          echo ::endgroup::
+          bundle exec bolt plan run peadm::replace_failed_postgresql \
+            --inventoryfile=spec/fixtures/litmus_inventory.yaml \
+            --modulepath=spec/fixtures/modules \
+            primary_host=$(yq '.groups[].targets[] | select(.vars.role == "primary") | .uri' spec/fixtures/litmus_inventory.yaml) \
+            replica_host=$(yq '.groups[].targets[] | select(.vars.role == "replica") | .uri' spec/fixtures/litmus_inventory.yaml) \
+            working_postgresql_host=$(yq '.groups[].targets[] | select(.vars.role == "replica-pdb-postgresql") | .uri' spec/fixtures/litmus_inventory.yaml) \
+            failed_postgresql_host=$(yq '.groups[].targets[] | select(.vars.role == "primary-pdb-postgresql") | .uri' spec/fixtures/litmus_inventory.yaml) \
+            replacement_postgresql_host=$(yq '.groups[].targets[] | select(.vars.role == "spare-replica") | .uri' spec/fixtures/litmus_inventory.yaml) \
+          --no-host-key-check
+      - name: Tear down PE XL DR test cluster
         if: ${{ always() }}
         continue-on-error: true
         run: |-
