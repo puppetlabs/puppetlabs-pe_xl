@@ -214,7 +214,6 @@ plan peadm::convert (
           add_extensions => {
             peadm::oid('pp_auth_role')             => 'pe_compiler',
             peadm::oid('peadm_availability_group') => 'A',
-            peadm::oid('peadm_legacy_compiler')    => 'false',
           },
         )
       },
@@ -224,7 +223,6 @@ plan peadm::convert (
           add_extensions => {
             peadm::oid('pp_auth_role')             => 'pe_compiler',
             peadm::oid('peadm_availability_group') => 'B',
-            peadm::oid('peadm_legacy_compiler')    => 'false',
           },
         )
       },
@@ -232,9 +230,8 @@ plan peadm::convert (
         run_plan('peadm::modify_certificate', $legacy_compiler_a_targets,
           primary_host   => $primary_target,
           add_extensions => {
-            peadm::oid('pp_auth_role')             => 'pe_compiler',
+            peadm::oid('pp_auth_role')             => 'pe_compiler_legacy',
             peadm::oid('peadm_availability_group') => 'A',
-            peadm::oid('peadm_legacy_compiler')    => 'true',
           },
         )
       },
@@ -242,9 +239,8 @@ plan peadm::convert (
         run_plan('peadm::modify_certificate', $legacy_compiler_b_targets,
           primary_host   => $primary_target,
           add_extensions => {
-            peadm::oid('pp_auth_role')             => 'pe_compiler',
+            peadm::oid('pp_auth_role')             => 'pe_compiler_legacy',
             peadm::oid('peadm_availability_group') => 'B',
-            peadm::oid('peadm_legacy_compiler')    => 'true',
           },
         )
       },
@@ -282,6 +278,14 @@ plan peadm::convert (
         }
 
         include peadm::setup::convert_node_manager
+      }
+
+      # Unpin legacy compilers from PE Master group
+      if $legacy_compiler_targets {
+        run_task('peadm::node_group_unpin', $primary_target,
+          node_certnames => $legacy_compiler_targets.map |$target| { $target.peadm::certname() },
+          group_name    => 'PE Master',
+        )
       }
     }
     else {
@@ -328,6 +332,8 @@ plan peadm::convert (
     }
 # lint:endignore
   }
+
+  run_task('peadm::update_pe_master_rules', $primary_target)
 
   return("Conversion to peadm Puppet Enterprise ${arch['architecture']} completed.")
 }

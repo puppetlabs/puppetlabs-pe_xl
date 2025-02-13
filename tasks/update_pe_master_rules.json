@@ -1,0 +1,8 @@
+{
+  "description": "Updates the PE Master group rules to replace pe_compiler with a regex match for any pe_compiler role",
+  "input_method": "stdin",
+  "private": true,
+  "implementations": [
+    {"name": "update_pe_master_rules.rb"}
+  ]
+} 

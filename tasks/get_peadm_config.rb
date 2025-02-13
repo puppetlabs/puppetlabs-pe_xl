@@ -22,7 +22,7 @@ class GetPEAdmConfig
 
   def config
     # Compute values
-    primary = groups.pinned('PE Master')
+    primary = groups.pinned('PE Certificate Authority')
     replica = groups.pinned('PE HA Replica')
     server_a = server('puppet/server', 'A', [primary, replica].compact)
     server_b = server('puppet/server', 'B', [primary, replica].compact)
@@ -94,8 +94,7 @@ class GetPEAdmConfig
   def compilers
     @compilers ||=
       pdb_query('inventory[certname,trusted.extensions] {
-            trusted.extensions.pp_auth_role = "pe_compiler" and
-            trusted.extensions."1.3.6.1.4.1.34380.1.1.9814" = "false"
+            trusted.extensions.pp_auth_role = "pe_compiler"
           }').map do |c|
         {
           'certname' => c['certname'],
@@ -108,8 +107,7 @@ class GetPEAdmConfig
   def legacy_compilers
     @legacy_compilers ||=
       pdb_query('inventory[certname,trusted.extensions] {
-          trusted.extensions.pp_auth_role = "pe_compiler" and
-          trusted.extensions."1.3.6.1.4.1.34380.1.1.9814" = "true"
+          trusted.extensions.pp_auth_role = "legacy_compiler"
         }').map do |c|
         {
           'certname' => c['certname'],

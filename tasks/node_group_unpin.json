@@ -1,0 +1,17 @@
+{
+  "description": "Unpins nodes from a specified PE node group",
+  "parameters": {
+    "node_certnames": {
+      "type": "Array[String]",
+      "description": "The certnames of the nodes to unpin"
+    },
+    "group_name": {
+      "type": "String",
+      "description": "The name of the node group to unpin the nodes from"
+    }
+  },
+  "input_method": "stdin",
+  "implementations": [
+    {"name": "node_group_unpin.rb"}
+  ]
+}
