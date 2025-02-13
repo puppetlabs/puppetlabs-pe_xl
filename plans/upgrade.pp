@@ -136,6 +136,22 @@ plan peadm::upgrade (
   peadm::assert_supported_pe_version($_version, $permit_unsafe_versions)
 
   # Gather certificate extension information from all systems
+  $cert_extensions_temp = run_task('peadm::cert_data', $all_targets).reduce({}) |$memo,$result| {
+    $memo + { $result.target.peadm::certname => $result['extensions'] }
+  }
+
+  $compiler_missing_legacy_targets = $cert_extensions_temp.filter |$name,$exts| {
+    ($name in $compiler_targets.map |$t| { $t.name }) and ($exts[peadm::oid('peadm_legacy_compiler')] == undef)
+  }.keys
+
+  run_plan('peadm::modify_certificate', $compiler_missing_legacy_targets,
+    primary_host   => $primary_target,
+    add_extensions => {
+      peadm::oid('peadm_legacy_compiler') => 'false',
+    },
+  )
+
+  # Gather certificate extension information from all systems
   $cert_extensions = run_task('peadm::cert_data', $all_targets).reduce({}) |$memo,$result| {
     $memo + { $result.target.peadm::certname => $result['extensions'] }
   }
